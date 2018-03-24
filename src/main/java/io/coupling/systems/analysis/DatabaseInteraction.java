@@ -1,6 +1,9 @@
 package io.coupling.systems.analysis;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.neo4j.driver.v1.Session;
+import org.neo4j.driver.v1.Statement;
 
 class DatabaseInteraction implements GraphObject {
 
@@ -21,7 +24,15 @@ class DatabaseInteraction implements GraphObject {
   }
 
   @Override
-  public void persist(Session session) {
-
+  public void persist(final Session session) {
+    final Map<String, Object> parameters = new HashMap<>();
+    parameters.putAll(databaseQuery.toParameters());
+    parameters.putAll(trace.toParameters());
+    final String text = "MATCH (s:Service {service:$service})\n"
+        + "CREATE (s)"
+        + "-[:TRACE {traceId:$traceId, spanId:$spanId}]->"
+        + "(:Database {query:$query})";
+    final Statement statement = new Statement(text).withParameters(parameters);
+    session.writeTransaction(transaction -> transaction.run(statement));
   }
 }

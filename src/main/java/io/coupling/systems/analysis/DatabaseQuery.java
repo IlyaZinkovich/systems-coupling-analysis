@@ -1,5 +1,8 @@
 package io.coupling.systems.analysis;
 
+import com.google.common.collect.ImmutableMap;
+import java.util.Map;
+
 class DatabaseQuery {
 
   private final String query;
@@ -13,5 +16,11 @@ class DatabaseQuery {
     return "DatabaseQuery{" +
         "query='" + query + '\'' +
         '}';
+  }
+
+  public Map<String, Object> toParameters() {
+    return ImmutableMap.<String, Object>builder()
+        .put("query", query)
+        .build();
   }
 }
