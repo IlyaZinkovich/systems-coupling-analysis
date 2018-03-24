@@ -1,4 +1,4 @@
-package io.coupling.systems;
+package io.coupling.systems.simulation;
 
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

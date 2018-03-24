@@ -1,7 +1,8 @@
-package io.coupling.systems;
+package io.coupling.systems.simulation;
 
 import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.H2;
 
+import com.google.gson.Gson;
 import javax.sql.DataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -37,7 +38,12 @@ public class SimulationApp {
   }
 
   @Bean
-  RequestLoggingInterceptor requestLoggingInterceptor() {
-    return new RequestLoggingInterceptor();
+  Gson gson() {
+    return new Gson();
+  }
+
+  @Bean
+  RequestLoggingInterceptor requestLoggingInterceptor(final Gson gson) {
+    return new RequestLoggingInterceptor(gson);
   }
 }

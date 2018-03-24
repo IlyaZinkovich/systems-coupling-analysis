@@ -49,7 +49,7 @@
     </encoder>
   </appender>
 
-  <logger name="io.coupling.systems" level="TRACE">
+  <logger name="io.coupling.systems.simulation.RequestLoggingInterceptor" level="TRACE">
     <appender-ref ref="logstash"/>
   </logger>
 

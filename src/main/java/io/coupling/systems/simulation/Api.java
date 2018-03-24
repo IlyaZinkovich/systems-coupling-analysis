@@ -1,4 +1,4 @@
-package io.coupling.systems;
+package io.coupling.systems.simulation;
 
 import java.util.List;
 import java.util.Map;
