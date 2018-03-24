@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import org.neo4j.driver.v1.AuthTokens;
 import org.neo4j.driver.v1.Driver;
@@ -21,15 +22,18 @@ public class GraphLogsReader {
     final Gson jsonParser = new Gson();
     final LogParser logParser = new LogParser(jsonParser);
     try (Driver driver = GraphDatabase.driver(uri, AuthTokens.basic(user, pass))) {
-      final String filePath = "build/simulation.json";
-      try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
-        try (final Session session = driver.session()) {
-          stream.map(logParser::parse)
-              .forEach(graphObject -> persistGraphObject(session, graphObject));
-        }
-      } catch (IOException e) {
-        throw new RuntimeException(format("Unable to read the file %s", filePath));
+      try (final Session session = driver.session()) {
+        parseLog(logParser, graphObject -> persistGraphObject(session, graphObject));
       }
+    }
+  }
+
+  private static void parseLog(LogParser logParser, Consumer<GraphObject> callback) {
+    final String filePath = "build/simulation.json";
+    try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
+      stream.map(logParser::parse).forEach(callback);
+    } catch (IOException e) {
+      throw new RuntimeException(format("Unable to read the file %s", filePath));
     }
   }
 
