@@ -12,6 +12,10 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 @SpringBootApplication
 public class SimulationApp {
 
+  public static void main(final String[] args) {
+    SpringApplication.run(SimulationApp.class, args);
+  }
+
   @Bean
   DataSource dataSource() {
     return new EmbeddedDatabaseBuilder().setType(H2).build();
@@ -35,9 +39,5 @@ public class SimulationApp {
   @Bean
   RequestLoggingInterceptor requestLoggingInterceptor() {
     return new RequestLoggingInterceptor();
-  }
-
-  public static void main(String[] args) {
-    SpringApplication.run(SimulationApp.class, args);
   }
 }
