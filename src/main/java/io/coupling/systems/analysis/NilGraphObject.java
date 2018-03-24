@@ -10,7 +10,7 @@ class NilGraphObject implements GraphObject {
   }
 
   @Override
-  public void persist(Session session) {
+  public void persist(final Session session) {
     throw new NilGraphObjectPersistException();
   }
 

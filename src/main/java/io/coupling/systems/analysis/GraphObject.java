@@ -4,5 +4,5 @@ import org.neo4j.driver.v1.Session;
 
 interface GraphObject {
 
-  void persist(Session session);
+  void persist(final Session session);
 }

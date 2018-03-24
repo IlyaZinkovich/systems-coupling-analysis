@@ -18,10 +18,10 @@ public class Log {
     this.recordParser = recordParser;
   }
 
-  public void read(Consumer<GraphObject> graphObjectConsumer) {
-    try (Stream<String> stream = Files.lines(Paths.get(path))) {
+  public void read(final Consumer<GraphObject> graphObjectConsumer) {
+    try (final Stream<String> stream = Files.lines(Paths.get(path))) {
       stream.map(recordParser::parse).forEach(graphObjectConsumer);
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new ReadLogFileException(format("Unable to read the file %s", path), e);
     }
   }

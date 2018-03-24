@@ -42,7 +42,7 @@ class DatabaseQuery {
 
   private class CannotExtractTableDataException extends RuntimeException {
 
-    CannotExtractTableDataException(Throwable cause) {
+    CannotExtractTableDataException(final Throwable cause) {
       super(cause);
     }
   }
