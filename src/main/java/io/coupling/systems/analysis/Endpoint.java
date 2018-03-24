@@ -1,5 +1,7 @@
 package io.coupling.systems.analysis;
 
+import static java.lang.String.format;
+
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 
@@ -15,8 +17,7 @@ public class Endpoint {
 
   public Map<String, Object> toParameters() {
     return ImmutableMap.<String, Object>builder()
-        .put("method", method)
-        .put("url", url)
+        .put("endpoint", format("%s %s", method, url))
         .build();
   }
 
