@@ -3,17 +3,17 @@ package io.coupling.systems.analysis;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-public class LogParser {
+public class LogRecordParser {
 
   private final Gson jsonParser;
 
-  LogParser(final Gson jsonParser) {
+  LogRecordParser(final Gson jsonParser) {
     this.jsonParser = jsonParser;
   }
 
-  public GraphObject parse(final String log) {
+  public GraphObject parse(final String logRecord) {
     try {
-      final JsonObject logJsonObject = jsonParser.fromJson(log, JsonObject.class);
+      final JsonObject logJsonObject = jsonParser.fromJson(logRecord, JsonObject.class);
       final String classProperty = logJsonObject.get("class").getAsString();
       final String service = logJsonObject.get("service").getAsString();
       final String traceId = logJsonObject.get("trace").getAsString();
