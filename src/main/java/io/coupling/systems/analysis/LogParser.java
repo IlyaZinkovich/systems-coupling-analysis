@@ -15,9 +15,10 @@ public class LogParser {
     try {
       final JsonObject logJsonObject = jsonParser.fromJson(log, JsonObject.class);
       final String classProperty = logJsonObject.get("class").getAsString();
+      final String service = logJsonObject.get("service").getAsString();
       final String traceId = logJsonObject.get("trace").getAsString();
       final String spanId = logJsonObject.get("span").getAsString();
-      final Trace trace = new Trace(traceId, spanId);
+      final Trace trace = new Trace(service, traceId, spanId);
       GraphObject graphObject;
       if ("i.c.s.s.RequestLoggingInterceptor".equals(classProperty)) {
         final String rest = logJsonObject.get("rest").getAsString();

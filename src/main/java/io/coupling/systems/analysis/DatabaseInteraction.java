@@ -1,5 +1,7 @@
 package io.coupling.systems.analysis;
 
+import org.neo4j.driver.v1.Session;
+
 class DatabaseInteraction implements GraphObject {
 
   private final DatabaseQuery databaseQuery;
@@ -16,5 +18,10 @@ class DatabaseInteraction implements GraphObject {
         "databaseQuery=" + databaseQuery +
         ", trace=" + trace +
         '}';
+  }
+
+  @Override
+  public void persist(Session session) {
+
   }
 }
