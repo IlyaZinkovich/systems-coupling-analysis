@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.Statement;
+import org.neo4j.driver.v1.StatementResult;
 
 class ClientRequest implements GraphObject {
 
@@ -29,12 +30,34 @@ class ClientRequest implements GraphObject {
     parameters.putAll(endpoint.toParameters());
     parameters.putAll(trace.toParameters());
     parameters.put("userAgent", "Browser");
-    final String text = "MERGE (client:ApiClient {userAgent:$userAgent})\n "
+    final String persistClientRequest = "MERGE (client:ApiClient {userAgent:$userAgent})\n "
         + "MERGE (api:Api {endpoint:$endpoint})\n "
         + "MERGE (s:Service {service:$service})\n "
         + "CREATE (client)-[:TRACE {traceId:$traceId, spanId:$spanId}]->"
         + "(api)-[:TRACE {traceId:$traceId, spanId:$spanId}]->(s)";
-    final Statement statement = new Statement(text).withParameters(parameters);
-    session.writeTransaction(transaction -> transaction.run(statement));
+    final Statement persistClientRequestStatement = new Statement(persistClientRequest, parameters);
+    session.writeTransaction(transaction -> transaction.run(persistClientRequestStatement));
+    persistCallingServiceRelationIfExist(session, parameters);
+  }
+
+  private void persistCallingServiceRelationIfExist(final Session session,
+      final Map<String, Object> parameters) {
+    final String getCallingService =
+        "MATCH ()-[t:TRACE {traceId: $traceId}]->(s:Service) WHERE s.service<>$service\n"
+            + "RETURN s.service";
+    final StatementResult result = session.readTransaction(transaction -> {
+      final Statement statement = new Statement(getCallingService, parameters);
+      return transaction.run(statement);
+    });
+    result.forEachRemaining(record -> {
+      final String callingService = record.get("s.service").asString();
+      parameters.put("callingService", callingService);
+      final String persistRelation =
+          "MATCH (s:Service) WHERE s.service=$callingService\n"
+              + "MATCH (api:Api) WHERE api.endpoint=$endpoint\n"
+              + "CREATE (s)-[:TRACE {traceId: $traceId, spanId: $spanId}]->(api)";
+      final Statement persistRelationStatement = new Statement(persistRelation, parameters);
+      session.writeTransaction(transaction -> transaction.run(persistRelationStatement));
+    });
   }
 }

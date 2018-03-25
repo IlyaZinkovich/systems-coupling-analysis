@@ -34,16 +34,23 @@ public class Api {
 
   @GetMapping(path = "/data/{id}")
   public Map<String, Object> get(@PathVariable final Long id) {
-    final String dataUrl = format("%s/data/{id}", hostServiceUrl);
-    final String hostServiceDataJson = restTemplate.getForObject(dataUrl, String.class, id);
-    Type type = new TypeToken<Map<String, Object>>() {
-    }.getType();
-    final Map<String, Object> hostServiceData = gson.fromJson(hostServiceDataJson, type);
-    final Map<String, Object> databaseData =
-        jdbcTemplate.queryForMap("SELECT `details` FROM `host_data_storage` WHERE `id`=?", id);
+    final Map<String, Object> hostServiceData = getHostServiceData(id);
+    final Map<String, Object> databaseData = getDatabaseData(id);
     return ImmutableMap.<String, Object>builder()
         .putAll(hostServiceData)
         .putAll(databaseData)
         .build();
+  }
+
+  private Map<String, Object> getDatabaseData(final Long id) {
+    return jdbcTemplate.queryForMap("SELECT `details` FROM `host_data_storage` WHERE `id`=?", id);
+  }
+
+  private Map<String, Object> getHostServiceData(@PathVariable Long id) {
+    final String dataUrl = format("%s/data/{id}", hostServiceUrl);
+    final String hostServiceDataJson = restTemplate.getForObject(dataUrl, String.class, id);
+    Type type = new TypeToken<Map<String, Object>>() {
+    }.getType();
+    return gson.fromJson(hostServiceDataJson, type);
   }
 }
