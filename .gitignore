@@ -1,4 +1,4 @@
 analysis/out
 plugin/out
-simulation-client
-simulation-host
+simulation-client/out
+simulation-host/out
