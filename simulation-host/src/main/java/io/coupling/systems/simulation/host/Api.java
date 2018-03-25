@@ -34,24 +34,28 @@ public class Api {
   public Map<String, Object> get(@PathVariable(name = "id") final Long id) {
     final String selectDataSql = "SELECT `id`, `data` FROM `host_data_storage` WHERE `id`=?";
     return jdbcTemplate.queryForMap(selectDataSql, id)
-        .entrySet().stream().collect(toMap(entry -> entry.getKey().toLowerCase(), Entry::getValue));
+        .entrySet().stream()
+        .filter(entry -> !"DETAILS".equals(entry.getKey()))
+        .collect(toMap(entry -> entry.getKey().toLowerCase(), Entry::getValue));
   }
 
   @PostMapping("/data")
   public ImmutableMap<String, Number> store(@RequestBody final Map<String, String> body) {
     final String data = body.get("data");
+    final String details = body.get("details");
     final KeyHolder keyHolder = new GeneratedKeyHolder();
-    jdbcTemplate.update(connection -> prepareUpdate(data, connection), keyHolder);
+    jdbcTemplate.update(connection -> prepareUpdate(data, details, connection), keyHolder);
     final Number generatedKey = Optional.ofNullable(keyHolder.getKey())
         .orElseThrow(StorageException::new);
     return ImmutableMap.of("id", generatedKey);
   }
 
-  private PreparedStatement prepareUpdate(final String data,
+  private PreparedStatement prepareUpdate(final String data, final String details,
       final Connection connection) throws SQLException {
-    final String updateSql = "INSERT INTO `host_data_storage` (`data`) VALUES (?)";
+    final String updateSql = "INSERT INTO `host_data_storage` (`data`, `details`) VALUES (?, ?)";
     final PreparedStatement ps = prepareIdGeneratingStatement(connection, updateSql);
     ps.setString(1, data);
+    ps.setString(2, details);
     return ps;
   }
 

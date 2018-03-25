@@ -2,4 +2,4 @@ server:
   port: 8282
 services:
   host:
-    url: "http://localhost:8181/"
+    url: "http://localhost:8181"

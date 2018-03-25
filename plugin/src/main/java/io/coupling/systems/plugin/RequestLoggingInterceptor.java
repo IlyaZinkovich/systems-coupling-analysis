@@ -24,15 +24,19 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
   @Override
   public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response,
       final Object handler) {
-    final HandlerMethod handlerMethod = (HandlerMethod) handler;
-    final String method = request.getMethod();
-    final String path = getPath(handlerMethod, method);
-    final JsonObject call = new JsonObject();
-    call.addProperty("method", method);
-    call.addProperty("path", path);
-    final String logMessage = gson.toJson(call);
-    log.trace(logMessage);
-    return true;
+    try {
+      final HandlerMethod handlerMethod = (HandlerMethod) handler;
+      final String method = request.getMethod();
+      final String path = getPath(handlerMethod, method);
+      final JsonObject call = new JsonObject();
+      call.addProperty("method", method);
+      call.addProperty("path", path);
+      final String logMessage = gson.toJson(call);
+      log.trace(logMessage);
+      return true;
+    } catch (final RuntimeException exception) {
+      return true;
+    }
   }
 
   private String getPath(final HandlerMethod handlerMethod, final String method) {
