@@ -1,2 +1,6 @@
 rootProject.name = 'systems'
+include 'analysis'
+include 'plugin'
+include 'simulation-client'
+include 'simulation-host'
 

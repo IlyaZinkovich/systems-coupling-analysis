@@ -1,0 +1,21 @@
+group 'io.coupling'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.springframework', name: 'spring-webmvc', version: '5.0.4.RELEASE'
+    compile group: 'org.springframework', name: 'spring-aop', version: '5.0.4.RELEASE'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.0'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
+    compile group: 'net.ttddyy', name: 'datasource-proxy', version: '1.4.7'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.1.0'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.1.0'
+}
