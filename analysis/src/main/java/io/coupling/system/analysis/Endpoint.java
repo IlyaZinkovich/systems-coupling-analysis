@@ -8,16 +8,16 @@ import java.util.Map;
 public class Endpoint {
 
   private final String method;
-  private final String url;
+  private final String path;
 
-  public Endpoint(final String method, final String url) {
+  public Endpoint(final String method, final String path) {
     this.method = method;
-    this.url = url;
+    this.path = path;
   }
 
   public Map<String, Object> toParameters() {
     return ImmutableMap.<String, Object>builder()
-        .put("endpoint", format("%s %s", method, url))
+        .put("endpoint", format("%s %s", method, path))
         .build();
   }
 
@@ -25,7 +25,7 @@ public class Endpoint {
   public String toString() {
     return "Endpoint{" +
         "method='" + method + '\'' +
-        ", url='" + url + '\'' +
+        ", path='" + path + '\'' +
         '}';
   }
 }
