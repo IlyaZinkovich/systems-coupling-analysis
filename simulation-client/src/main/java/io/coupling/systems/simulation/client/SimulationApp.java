@@ -1,7 +1,5 @@
 package io.coupling.systems.simulation.client;
 
-import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.H2;
-
 import com.google.gson.Gson;
 import io.coupling.systems.plugin.DataSourceProxy;
 import io.coupling.systems.plugin.RequestLoggingInterceptor;
@@ -9,10 +7,10 @@ import io.coupling.systems.plugin.WebMvcConfig;
 import javax.sql.DataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class SimulationApp {
@@ -23,7 +21,11 @@ public class SimulationApp {
 
   @Bean
   DataSource dataSource() {
-    return new EmbeddedDatabaseBuilder().setType(H2).build();
+    return DataSourceBuilder.create()
+        .driverClassName("com.mysql.cj.jdbc.Driver")
+        .url("jdbc:mysql://localhost:3306/data?useSSL=false")
+        .username("user").password("pass")
+        .build();
   }
 
   @Bean
@@ -49,5 +51,10 @@ public class SimulationApp {
   @Bean
   RequestLoggingInterceptor requestLoggingInterceptor(final Gson gson) {
     return new RequestLoggingInterceptor(gson);
+  }
+
+  @Bean
+  RestTemplate restTemplate() {
+    return new RestTemplate();
   }
 }

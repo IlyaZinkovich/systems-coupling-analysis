@@ -13,14 +13,14 @@ public class GraphLogsReader {
     final String uri = "bolt://localhost:7687";
     final String user = "neo4j";
     final String pass = "root";
-    final String logPath = "build/simulation.json";
+    final String logDirectoryName = "build";
     final Gson jsonParser = new Gson();
     final LogRecordParser logParser = new LogRecordParser(jsonParser);
+    final LogDirectory logDirectory = new LogDirectory(logDirectoryName, logParser);
     try (final Driver driver = GraphDatabase.driver(uri, AuthTokens.basic(user, pass))) {
       try (final Session session = driver.session()) {
-        final Log log = new Log(logPath, logParser);
         final Consumer<GraphObject> graphObjectConsumer = new GraphObjectConsumer(session);
-        log.read(graphObjectConsumer);
+        logDirectory.read(graphObjectConsumer);
       }
     }
   }

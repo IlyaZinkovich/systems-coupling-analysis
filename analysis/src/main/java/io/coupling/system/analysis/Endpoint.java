@@ -7,17 +7,19 @@ import java.util.Map;
 
 public class Endpoint {
 
+  private final String service;
   private final String method;
   private final String path;
 
-  public Endpoint(final String method, final String path) {
+  Endpoint(String service, final String method, final String path) {
+    this.service = service;
     this.method = method;
     this.path = path;
   }
 
   public Map<String, Object> toParameters() {
     return ImmutableMap.<String, Object>builder()
-        .put("endpoint", format("%s %s", method, path))
+        .put("endpoint", format("%s %s%s", method, service, path))
         .build();
   }
 

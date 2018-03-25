@@ -6,22 +6,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class Api {
 
   private final JdbcTemplate jdbcTemplate;
+  private final RestTemplate restTemplate;
 
   @Autowired
-  public Api(final JdbcTemplate jdbcTemplate) {
+  public Api(final JdbcTemplate jdbcTemplate, final RestTemplate restTemplate) {
     this.jdbcTemplate = jdbcTemplate;
+    this.restTemplate = restTemplate;
   }
 
-  @GetMapping("/")
+  @GetMapping(path = "/")
   public String get() {
-    jdbcTemplate.execute("INSERT INTO `information` (`data`) VALUES ('some data')");
     final List<Map<String, Object>> data =
-        jdbcTemplate.queryForList("SELECT `id`, `data` FROM `information`");
+        jdbcTemplate.queryForList("SELECT `id`, `data` FROM `host_data_storage`");
     return data.toString();
   }
 }

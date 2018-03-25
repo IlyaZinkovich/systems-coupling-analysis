@@ -1,18 +1,24 @@
 package io.coupling.systems.simulation.host;
 
-import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.H2;
+import static com.wix.mysql.EmbeddedMysql.anEmbeddedMysql;
+import static com.wix.mysql.ScriptResolver.classPathScript;
+import static com.wix.mysql.config.Charset.UTF8;
+import static com.wix.mysql.config.MysqldConfig.aMysqldConfig;
+import static com.wix.mysql.distribution.Version.v5_7_latest;
+import static java.lang.String.format;
 
 import com.google.gson.Gson;
+import com.wix.mysql.EmbeddedMysql;
+import com.wix.mysql.config.MysqldConfig;
 import io.coupling.systems.plugin.DataSourceProxy;
 import io.coupling.systems.plugin.RequestLoggingInterceptor;
 import io.coupling.systems.plugin.WebMvcConfig;
 import javax.sql.DataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.web.servlet.HandlerMapping;
 
 @SpringBootApplication
 public class SimulationApp {
@@ -22,8 +28,23 @@ public class SimulationApp {
   }
 
   @Bean
-  DataSource dataSource() {
-    return new EmbeddedDatabaseBuilder().setType(H2).build();
+  DataSource dataSource(final EmbeddedMysql embeddedMysql) {
+    final int mysqlPort = embeddedMysql.getConfig().getPort();
+    return DataSourceBuilder.create()
+        .driverClassName("com.mysql.cj.jdbc.Driver")
+        .url(format("jdbc:mysql://localhost:%d/data?useSSL=false", mysqlPort))
+        .username("user").password("pass")
+        .build();
+  }
+
+  @Bean
+  EmbeddedMysql embeddedMysql() {
+    MysqldConfig config = aMysqldConfig(v5_7_latest).withCharset(UTF8)
+        .withPort(3306).withUser("user", "pass")
+        .build();
+    return anEmbeddedMysql(config)
+        .addSchema("data", classPathScript("schema.sql"))
+        .start();
   }
 
   @Bean
