@@ -28,7 +28,7 @@ class DatabaseInteraction implements GraphObject {
     final Map<String, Object> parameters = new HashMap<>();
     parameters.putAll(databaseQuery.toParameters());
     parameters.putAll(trace.toParameters());
-    final String text = "MERGE (s:Service {service:$service})\n "
+    final String text = "MERGE (s:Service {name:$service})\n "
         + "MERGE (q:Query {query:$query})\n "
         + "MERGE (t:Table {name:$table})\n "
         + "CREATE (s)-[:TRACE {traceId:$traceId, spanId:$spanId}]->"

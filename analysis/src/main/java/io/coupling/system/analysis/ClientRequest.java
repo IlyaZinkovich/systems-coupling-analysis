@@ -32,7 +32,7 @@ class ClientRequest implements GraphObject {
     parameters.put("userAgent", "Browser");
     final String persistClientRequest = "MERGE (client:ApiClient {userAgent:$userAgent})\n "
         + "MERGE (api:Api {endpoint:$endpoint})\n "
-        + "MERGE (s:Service {service:$service})\n "
+        + "MERGE (s:Service {name:$service})\n "
         + "CREATE (client)-[:TRACE {traceId:$traceId, spanId:$spanId}]->"
         + "(api)-[:TRACE {traceId:$traceId, spanId:$spanId}]->(s)";
     final Statement persistClientRequestStatement = new Statement(persistClientRequest, parameters);
@@ -43,17 +43,17 @@ class ClientRequest implements GraphObject {
   private void persistCallingServiceRelationIfExist(final Session session,
       final Map<String, Object> parameters) {
     final String getCallingService =
-        "MATCH ()-[t:TRACE {traceId: $traceId}]->(s:Service) WHERE s.service<>$service\n"
-            + "RETURN s.service";
+        "MATCH ()-[t:TRACE {traceId: $traceId}]->(s:Service) WHERE s.name<>$service\n"
+            + "RETURN s.name";
     final StatementResult result = session.readTransaction(transaction -> {
       final Statement statement = new Statement(getCallingService, parameters);
       return transaction.run(statement);
     });
     result.forEachRemaining(record -> {
-      final String callingService = record.get("s.service").asString();
+      final String callingService = record.get("s.name").asString();
       parameters.put("callingService", callingService);
       final String persistRelation =
-          "MATCH (s:Service) WHERE s.service=$callingService\n"
+          "MATCH (s:Service) WHERE s.name=$callingService\n"
               + "MATCH (api:Api) WHERE api.endpoint=$endpoint\n"
               + "CREATE (s)-[:TRACE {traceId: $traceId, spanId: $spanId}]->(api)";
       final Statement persistRelationStatement = new Statement(persistRelation, parameters);
