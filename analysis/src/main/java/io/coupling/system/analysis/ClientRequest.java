@@ -31,7 +31,7 @@ class ClientRequest implements GraphObject {
     parameters.putAll(trace.toParameters());
     parameters.put("userAgent", "Browser");
     final String persistClientRequest = "MERGE (client:ApiClient {userAgent:$userAgent})\n "
-        + "MERGE (api:Api {endpoint:$endpoint})\n "
+        + "MERGE (api:Api {endpoint:$endpoint, service:$service})\n "
         + "MERGE (s:Service {name:$service})\n "
         + "CREATE (client)-[:TRACE {traceId:$traceId, spanId:$spanId}]->"
         + "(api)-[:TRACE {traceId:$traceId, spanId:$spanId}]->(s)";
@@ -54,7 +54,7 @@ class ClientRequest implements GraphObject {
       parameters.put("callingService", callingService);
       final String persistRelation =
           "MATCH (s:Service) WHERE s.name=$callingService\n"
-              + "MATCH (api:Api) WHERE api.endpoint=$endpoint\n"
+              + "MATCH (api:Api) WHERE api.endpoint=$endpoint AND api.service=$service\n"
               + "CREATE (s)-[:TRACE {traceId: $traceId, spanId: $spanId}]->(api)";
       final Statement persistRelationStatement = new Statement(persistRelation, parameters);
       session.writeTransaction(transaction -> transaction.run(persistRelationStatement));

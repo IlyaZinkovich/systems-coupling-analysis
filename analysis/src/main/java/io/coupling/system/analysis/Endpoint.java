@@ -19,7 +19,7 @@ public class Endpoint {
 
   public Map<String, Object> toParameters() {
     return ImmutableMap.<String, Object>builder()
-        .put("endpoint", format("%s %s%s", method, service, path))
+        .put("endpoint", format("%s %s", method, path))
         .build();
   }
 
