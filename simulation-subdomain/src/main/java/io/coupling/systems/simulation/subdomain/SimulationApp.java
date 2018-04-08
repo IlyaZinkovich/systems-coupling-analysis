@@ -1,4 +1,4 @@
-package io.coupling.systems.simulation.host;
+package io.coupling.systems.simulation.subdomain;
 
 import static com.wix.mysql.EmbeddedMysql.anEmbeddedMysql;
 import static com.wix.mysql.ScriptResolver.classPathScript;

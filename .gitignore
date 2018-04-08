@@ -1,4 +1,4 @@
 analysis/out
 plugin/out
-simulation-client/out
-simulation-host/out
+simulation-core/out
+simulation-subdomain/out

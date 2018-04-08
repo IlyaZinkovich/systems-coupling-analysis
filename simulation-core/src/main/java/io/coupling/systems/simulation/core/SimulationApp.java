@@ -1,4 +1,4 @@
-package io.coupling.systems.simulation.client;
+package io.coupling.systems.simulation.core;
 
 import com.google.gson.Gson;
 import io.coupling.systems.plugin.DataSourceProxy;

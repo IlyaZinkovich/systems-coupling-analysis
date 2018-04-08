@@ -1,4 +1,4 @@
-CREATE TABLE `host_data_storage` (
+CREATE TABLE `subdomain_storage` (
   `id` BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
   `data` VARCHAR(100) NOT NULL,
   `details` VARCHAR(100) NOT NULL

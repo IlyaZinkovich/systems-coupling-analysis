@@ -29,7 +29,7 @@ class ClientRequest implements GraphObject {
     final Map<String, Object> parameters = new HashMap<>();
     parameters.putAll(endpoint.toParameters());
     parameters.putAll(trace.toParameters());
-    parameters.put("userAgent", "Browser");
+    parameters.put("userAgent", "Mobile");
     final String persistClientRequest = "MERGE (client:ApiClient {userAgent:$userAgent})\n "
         + "MERGE (api:Api {endpoint:$endpoint, service:$service})\n "
         + "MERGE (s:Service {name:$service})\n "

@@ -1,4 +1,4 @@
-package io.coupling.systems.simulation.client;
+package io.coupling.systems.simulation.core;
 
 import static java.lang.String.format;
 
@@ -43,10 +43,10 @@ public class Api {
   }
 
   private Map<String, Object> getDatabaseData(final Long id) {
-    return jdbcTemplate.queryForMap("SELECT `details` FROM `host_data_storage` WHERE `id`=?", id);
+    return jdbcTemplate.queryForMap("SELECT `details` FROM `subdomain_storage` WHERE `id`=?", id);
   }
 
-  private Map<String, Object> getHostServiceData(@PathVariable Long id) {
+  private Map<String, Object> getHostServiceData(@PathVariable final Long id) {
     final String dataUrl = format("%s/data/{id}", hostServiceUrl);
     final String hostServiceDataJson = restTemplate.getForObject(dataUrl, String.class, id);
     Type type = new TypeToken<Map<String, Object>>() {

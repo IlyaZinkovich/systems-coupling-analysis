@@ -1,4 +1,4 @@
-package io.coupling.systems.simulation.host;
+package io.coupling.systems.simulation.subdomain;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.util.stream.Collectors.toMap;
@@ -32,7 +32,7 @@ public class Api {
 
   @GetMapping("/data/{id}")
   public Map<String, Object> get(@PathVariable(name = "id") final Long id) {
-    final String selectDataSql = "SELECT `id`, `data` FROM `host_data_storage` WHERE `id`=?";
+    final String selectDataSql = "SELECT `id`, `data` FROM `subdomain_storage` WHERE `id`=?";
     return jdbcTemplate.queryForMap(selectDataSql, id)
         .entrySet().stream()
         .filter(entry -> !"DETAILS".equals(entry.getKey()))
@@ -40,7 +40,7 @@ public class Api {
   }
 
   @PostMapping("/data")
-  public ImmutableMap<String, Number> store(@RequestBody final Map<String, String> body) {
+  public Map<String, Number> store(@RequestBody final Map<String, String> body) {
     final String data = body.get("data");
     final String details = body.get("details");
     final KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -52,7 +52,7 @@ public class Api {
 
   private PreparedStatement prepareUpdate(final String data, final String details,
       final Connection connection) throws SQLException {
-    final String updateSql = "INSERT INTO `host_data_storage` (`data`, `details`) VALUES (?, ?)";
+    final String updateSql = "INSERT INTO `subdomain_storage` (`data`, `details`) VALUES (?, ?)";
     final PreparedStatement ps = prepareIdGeneratingStatement(connection, updateSql);
     ps.setString(1, data);
     ps.setString(2, details);
